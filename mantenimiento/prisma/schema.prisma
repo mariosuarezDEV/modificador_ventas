@@ -139,75 +139,6 @@ model areasrestaurantdetalle {
   @@ignore
 }
 
-model auth_group {
-  id                     Int                      @id(map: "PK__auth_gro__3213E83FE6020AAE") @default(autoincrement())
-  name                   String                   @unique(map: "auth_group_name_a6ea08ec_uniq") @db.NVarChar(150)
-  auth_group_permissions auth_group_permissions[]
-  auth_user_groups       auth_user_groups[]
-}
-
-model auth_group_permissions {
-  id              BigInt          @id(map: "PK__auth_gro__3213E83F626FDF4F") @default(autoincrement())
-  group_id        Int
-  permission_id   Int
-  auth_group      auth_group      @relation(fields: [group_id], references: [id], onUpdate: NoAction, map: "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id")
-  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onUpdate: NoAction, map: "auth_group_permissions_permission_id_84c5c92e_fk_auth_permission_id")
-
-  @@index([group_id], map: "auth_group_permissions_group_id_b120cbf9")
-  @@index([permission_id], map: "auth_group_permissions_permission_id_84c5c92e")
-}
-
-model auth_permission {
-  id                         Int                          @id(map: "PK__auth_per__3213E83F9814A4EA") @default(autoincrement())
-  name                       String                       @db.NVarChar(255)
-  content_type_id            Int
-  codename                   String                       @db.NVarChar(100)
-  auth_group_permissions     auth_group_permissions[]
-  django_content_type        django_content_type          @relation(fields: [content_type_id], references: [id], onUpdate: NoAction, map: "auth_permission_content_type_id_2f476e4b_fk_django_content_type_id")
-  auth_user_user_permissions auth_user_user_permissions[]
-
-  @@index([content_type_id], map: "auth_permission_content_type_id_2f476e4b")
-}
-
-model auth_user {
-  id                         Int                          @id(map: "PK__auth_use__3213E83F526BCAA0") @default(autoincrement())
-  password                   String                       @db.NVarChar(128)
-  last_login                 DateTime?                    @db.DateTimeOffset
-  is_superuser               Boolean
-  username                   String                       @unique(map: "auth_user_username_6821ab7c_uniq") @db.NVarChar(150)
-  first_name                 String                       @db.NVarChar(150)
-  last_name                  String                       @db.NVarChar(150)
-  email                      String                       @db.NVarChar(254)
-  is_staff                   Boolean
-  is_active                  Boolean
-  date_joined                DateTime                     @db.DateTimeOffset
-  auth_user_groups           auth_user_groups[]
-  auth_user_user_permissions auth_user_user_permissions[]
-  django_admin_log           django_admin_log[]
-}
-
-model auth_user_groups {
-  id         BigInt     @id(map: "PK__auth_use__3213E83FC537F9FF") @default(autoincrement())
-  user_id    Int
-  group_id   Int
-  auth_group auth_group @relation(fields: [group_id], references: [id], onUpdate: NoAction, map: "auth_user_groups_group_id_97559544_fk_auth_group_id")
-  auth_user  auth_user  @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id")
-
-  @@index([group_id], map: "auth_user_groups_group_id_97559544")
-  @@index([user_id], map: "auth_user_groups_user_id_6a12ed8b")
-}
-
-model auth_user_user_permissions {
-  id              BigInt          @id(map: "PK__auth_use__3213E83F2260D9C9") @default(autoincrement())
-  user_id         Int
-  permission_id   Int
-  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onUpdate: NoAction, map: "auth_user_user_permissions_permission_id_1fbb5f2c_fk_auth_permission_id")
-  auth_user       auth_user       @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id")
-
-  @@index([permission_id], map: "auth_user_user_permissions_permission_id_1fbb5f2c")
-  @@index([user_id], map: "auth_user_user_permissions_user_id_a95ead1b")
-}
-
 model AxClaves {
   Id             Int     @id(map: "PK__AxClaves__3214EC07BF5793D6") @default(autoincrement())
   AxId           String  @db.VarChar(50)
@@ -550,7 +481,6 @@ model cfdirelacionados {
   @@ignore
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model cheqdet {
   foliodet                   BigInt?
   movimiento                 Decimal?   @db.Decimal(3, 0)
@@ -606,10 +536,10 @@ model cheqdet {
   precio_ec                  Bytes?     @db.VarBinary(128)
   escargoarea                Boolean    @default(false, map: "DF__cheqdet__escargo__47F18835")
   WorkspaceId                String?    @db.UniqueIdentifier
+  id                         BigInt     @id(map: "PK_cheqdet_id") @default(autoincrement())
   productos                  productos? @relation(fields: [idproducto], references: [idproducto], onDelete: NoAction, map: "FK_cheqdet_productos")
 
   @@index([foliodet], map: "FYI_cheqdet_foliodet")
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -1045,7 +975,6 @@ model chequesf {
   mv_lastname                     String    @default("", map: "DF__chequesf__mv_las__3F27380A") @db.VarChar(100)
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model chequespagos {
   folio           BigInt
   idformadepago   String?       @db.VarChar(5)
@@ -1061,10 +990,10 @@ model chequespagos {
   WorkspaceId     String        @default(dbgenerated("newid()"), map: "DF__chequespa__Works__46C859D2") @db.UniqueIdentifier
   cardBrand       String        @default("", map: "DF__chequespa__cardB__560A9D62") @db.VarChar(120)
   importe_cashdro Float?        @default(0, map: "DF__chequespa__impor__4F5D9FD3") @db.Money
+  id              BigInt        @id(map: "PK_chequespagos_id") @default(autoincrement())
   formasdepago    formasdepago? @relation(fields: [idformadepago], references: [idformadepago], onDelete: NoAction, map: "FK_chequespagos_formasdepago")
 
   @@index([folio], map: "FYI_chequespagos_folio")
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -1138,6 +1067,10 @@ model clientes {
   tratamientopersonal             String                   @default("", map: "DF__clientes__tratam__6C2EE8AB") @db.VarChar(30)
   status                          Boolean                  @default(true, map: "DF__clientes__status__4A98EAB6")
   dias_vigencia_credito           Int                      @default(0, map: "DF__clientes__dias_v__33B5855E")
+  primer_nombre                   String                   @default("", map: "DF_clientes_primer_nombre") @db.VarChar(50)
+  otros_nombres                   String                   @default("", map: "DF_clientes_otros_nombres") @db.VarChar(120)
+  apellido                        String                   @default("", map: "DF_clientes_apellido") @db.VarChar(50)
+  segundo_apellido                String                   @default("", map: "DF_clientes_segundo_apellido") @db.VarChar(120)
   facturas                        facturas[]
   facturas_rep                    facturas_rep[]
   facturascomplementoine          facturascomplementoine[]
@@ -2169,45 +2102,6 @@ model direccionesdomicilio {
   @@ignore
 }
 
-model django_admin_log {
-  id                  Int                  @id(map: "PK__django_a__3213E83F06A980C0") @default(autoincrement())
-  action_time         DateTime             @db.DateTimeOffset
-  object_id           String?              @db.NVarChar(Max)
-  object_repr         String               @db.NVarChar(200)
-  action_flag         Int                  @db.SmallInt
-  change_message      String               @db.NVarChar(Max)
-  content_type_id     Int?
-  user_id             Int
-  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_content_type_id_c4bce8eb_fk_django_content_type_id")
-  auth_user           auth_user            @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "django_admin_log_user_id_c564eba6_fk_auth_user_id")
-
-  @@index([content_type_id], map: "django_admin_log_content_type_id_c4bce8eb")
-  @@index([user_id], map: "django_admin_log_user_id_c564eba6")
-}
-
-model django_content_type {
-  id               Int                @id(map: "PK__django_c__3213E83FE12540F9") @default(autoincrement())
-  app_label        String             @db.NVarChar(100)
-  model            String             @db.NVarChar(100)
-  auth_permission  auth_permission[]
-  django_admin_log django_admin_log[]
-}
-
-model django_migrations {
-  id      BigInt   @id(map: "PK__django_m__3213E83FA7481113") @default(autoincrement())
-  app     String   @db.NVarChar(255)
-  name    String   @db.NVarChar(255)
-  applied DateTime @db.DateTimeOffset
-}
-
-model django_session {
-  session_key  String   @id(map: "PK__django_s__B3BA0F1F94513B57") @db.NVarChar(40)
-  session_data String   @db.NVarChar(Max)
-  expire_date  DateTime @db.DateTimeOffset
-
-  @@index([expire_date], map: "django_session_expire_date_a5c62663")
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model elaborados {
   idelaborado String?  @db.VarChar(15)
@@ -2311,7 +2205,7 @@ model empresas {
   meseros                         meseros[]
   modificadores                   modificadores[]                   @ignore
   pedidos                         pedidos[]
-  productosdetalle                productosdetalle[]                @ignore
+  productosdetalle                productosdetalle[]
   productosmonedero               productosmonedero[]               @ignore
   proveedorespredet               proveedorespredet[]               @ignore
   registro_licencias              registro_licencias[]              @ignore
@@ -3164,7 +3058,7 @@ model formasdepago {
   sumatotal                 Boolean                 @default(false, map: "DF__formasdep__sumat__4E9E85C4")
   equivalencia              String?                 @default("", map: "DF__formasdep__equiv__021E29CA") @db.VarChar(30)
   WorkspaceId               String?                 @default(dbgenerated("newid()"), map: "DF__formasdep__Works__30D918B3") @db.UniqueIdentifier
-  chequespagos              chequespagos[]          @ignore
+  chequespagos              chequespagos[]
   chequespagosf             chequespagosf[]         @ignore
   servicecodes              servicecodes?           @relation(fields: [servicecode], references: [servicecode], onDelete: NoAction, map: "FK_formasdepago_servicecode")
   formasdepago_app_area     formasdepago_app_area[]
@@ -3376,6 +3270,7 @@ model grupos {
   WorkspaceId             String?                   @default(dbgenerated("newid()"), map: "df_grupos_workspaceid") @db.UniqueIdentifier
   alcohol                 Boolean                   @default(false, map: "DF_grupos_alcohol")
   servicecode             String?                   @db.VarChar(50)
+  IdBO                    Int?
   servicecodes            servicecodes?             @relation(fields: [servicecode], references: [servicecode], onDelete: NoAction, map: "FK_grupos_servicecode")
   grupossubgrupos         grupossubgrupos[]         @ignore
   productos               productos[]
@@ -3443,6 +3338,7 @@ model gruposmodificadores {
   descripcion                  String?                        @db.VarChar(30)
   id_etiqueta                  String                         @default("", map: "DF__gruposmod__id_et__24334AAC") @db.VarChar(50)
   WorkspaceId                  String?                        @default(dbgenerated("newid()"), map: "df_gruposmodificadores_workspaceid") @db.UniqueIdentifier
+  IdBO                         Int?
   gruposmodificadoresproductos gruposmodificadoresproductos[]
   modificadores                modificadores[]                @ignore
 }
@@ -4451,7 +4347,7 @@ model nsplatformcontrol {
 }
 
 model nsplatforminventory {
-  WorkspaceId    String    @id(map: "PK__nsplatfo__C84765D115AD8F36") @default(dbgenerated("newid()"), map: "DF__nsplatfor__Works__44E01160") @db.UniqueIdentifier
+  WorkspaceId    String    @id(map: "PK__nsplatfo__C84765D1D5E7DD4C") @default(dbgenerated("newid()"), map: "DF__nsplatfor__Works__44E01160") @db.UniqueIdentifier
   idalmacen      String    @db.VarChar(5)
   idinsumo       String?   @db.VarChar(15)
   idpresentacion String?   @db.VarChar(15)
@@ -5575,6 +5471,7 @@ model pos_settings {
   cashdro_transfer_shift                      Boolean  @default(false, map: "DF__pos_setti__cashd__532E30B7")
   cashdro_has_coin_cassette                   Boolean  @default(false, map: "DF__pos_setti__cashd__542254F0")
   reducir_fuente_encabezado_captura_productos Boolean  @default(false, map: "DF__pos_setti__reduc__57F2E5D4")
+  criterio_busqueda_catalogos                 String   @default("CLAVE", map: "DF__pos_setti__crite__5F94079C") @db.VarChar(25)
 }
 
 model PriceLists {
@@ -5635,8 +5532,9 @@ model productos {
   imagenbackoffice              Bytes?                          @db.Image
   monitoreo                     Boolean                         @default(false, map: "DF__productos__monit__2F25DA6B")
   prioridadimpresion            Decimal?                        @default(0, map: "DF__productos__prior__274FAE79") @db.Decimal(4, 0)
+  IdBO                          Int?
   cargosareas                   cargosareas[]
-  cheqdet                       cheqdet[]                       @ignore
+  cheqdet                       cheqdet[]
   cheqdetf                      cheqdetf[]                      @ignore
   cheqdetfeliminados            cheqdetfeliminados[]            @ignore
   comentarios                   comentarios[]                   @ignore
@@ -5651,7 +5549,7 @@ model productos {
   productos_puntos              productos_puntos[]
   ProductosAgruparConfig        ProductosAgruparConfig[]
   productosdelivery             productosdelivery[]             @ignore
-  productosdetalle              productosdetalle[]              @ignore
+  productosdetalle              productosdetalle[]
   productosenproduccion         productosenproduccion[]         @ignore
   ProductosEquivalenciasConfig  ProductosEquivalenciasConfig[]
   productosmonedero             productosmonedero[]             @ignore
@@ -5697,7 +5595,6 @@ model productosdelivery {
   @@ignore
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model productosdetalle {
   idproducto                    String?    @db.VarChar(15)
   idempresa                     String?    @db.VarChar(15)
@@ -5772,11 +5669,10 @@ model productosdetalle {
   rutaimagen                    String?    @db.VarChar(Max)
   comisionprecio                Float      @default(0, map: "DF__productos__comis__7AE71C56") @db.Money
   usa_bascula                   Boolean    @default(false, map: "DF__productos__usa_b__174E50DA")
+  id                            BigInt     @id(map: "PK_Productosdetalle_id") @default(autoincrement())
   empresas                      empresas?  @relation(fields: [idempresa], references: [idempresa], onDelete: NoAction, map: "FK_productosdetalle_empresas")
   productos                     productos? @relation(fields: [idproducto], references: [idproducto], onDelete: Cascade, map: "FK_productosdetalle_productos")
   udsmedida                     udsmedida? @relation(fields: [idunidad], references: [idunidad], onDelete: NoAction, map: "FK_unidades_productos")
-
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -6398,6 +6294,7 @@ model subgrupos {
   id_etiqueta           String               @default("", map: "DF__subgrupos__id_et__233F2673") @db.VarChar(50)
   WorkspaceId           String?              @default(dbgenerated("newid()"), map: "df_subgrupos_workspaceid") @db.UniqueIdentifier
   servicecode           String?              @db.VarChar(50)
+  IdBO                  Int?
   grupossubgrupos       grupossubgrupos[]    @ignore
   subgruposproductos    subgruposproductos[] @ignore
 }
@@ -7217,7 +7114,7 @@ model udsmedida {
   idunidad           String             @id(map: "PK_udsmedida") @db.VarChar(50)
   idunidadmedida_SAT String             @default("", map: "DF__udsmedida__iduni__63E3BB6D") @db.VarChar(50)
   WorkspaceId        String?            @default(dbgenerated("newid()"), map: "df_udsmedida_workspaceid") @db.UniqueIdentifier
-  productosdetalle   productosdetalle[] @ignore
+  productosdetalle   productosdetalle[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -7484,7 +7381,7 @@ model workspace_apps {
 }
 
 model workspace_apps_pricelists {
-  Id          Int     @id(map: "PK__workspac__3214EC07D94902AF")
+  Id          Int     @id(map: "PK__workspac__3214EC07283BC46A")
   IdApp       Int
   FKPriceList String  @db.UniqueIdentifier
   IsUse       Boolean
