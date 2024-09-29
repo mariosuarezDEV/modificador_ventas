@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-7g0@2^u=$=ecd-h9ylh%%x^0o&@nmym4=4)2v1nfre$qszm3ub
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,7 +81,7 @@ DATABASES = {
         "NAME": "softrestaurant11",
         "USER": "sa",
         "PASSWORD": "National09",
-        "HOST": "192.168.193.252",
+        "HOST": "192.168.193.61",
         "PORT": "1433",
         "OPTIONS": {"driver": "ODBC Driver 18 for SQL Server",
                     'extra_params': 'TrustServerCertificate=yes;',
