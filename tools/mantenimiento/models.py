@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 
 class Servicecodes(models.Model):
@@ -239,6 +240,10 @@ class Cheques(models.Model):
     class Meta:
         managed = False
         db_table = 'cheques'
+    
+    def __str__ (self):
+        # Mostar el folio y el total
+        return f'{self.folio} - {self.total}'
 
 class Cheqdet(models.Model):
     foliodet = models.BigIntegerField(blank=True, null=True)

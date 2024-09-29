@@ -2,6 +2,8 @@ from rest_framework import serializers # Importamos el módulo serializers de Dj
 
 from .models import Cheques, Cheqdet, Chequespagos
 
+from django.db.models import Sum # Importamos el módulo Sum de Django
+
 class ChequeSerializer(serializers.ModelSerializer): # Creamos la clase ChequeSerializer que hereda de modelSerializer
     class Meta:
         model = Cheques
@@ -23,4 +25,4 @@ class ChequespagosSerializer(serializers.ModelSerializer): # Creamos la clase Ch
 class ChequeFolioSerializer(serializers.ModelSerializer): # Creamos la clase ChequeFolioSerializer que hereda de modelSerializer
     class Meta:
         model = Cheques
-        fields = ['folio', 'fecha']
+        fields = ['folio', 'total']

@@ -14,6 +14,8 @@ from .serializers import ChequeSerializer, CheqdetSerializer, ChequespagosSerial
 # Busqueda en base de datos con un 404 sino existe
 from django.shortcuts import get_object_or_404
 
+from django.db.models import Sum # Importamos el módulo Sum de Django
+
 # Create
 
 # Read
@@ -48,11 +50,18 @@ def ver_pagos(request, folio):
     except Chequespagos.DoesNotExist as e:
         return Response({'error': "No existe el cheque seleccionado"}, status=status.HTTP_404_NOT_FOUND)
 
-## Cuentas en enfectivo mayores a 120 (que no tenga monto en tarjeta) y que no esten facturadas
+## Cuentas en enfectivo mayores a 120 (que no tenga monto en tarjeta) que no esten facturadas de un fecha en especifico
 @api_view(['GET'])
 def cuentas_efectivo(request):
-    cuentas = Cheques.objects.filter(total__gt=120, tarjeta=0, facturado=False)
+    fecha = request.data['fecha']
+    cuentas = Cheques.objects.filter(total__gt=120, tarjeta=0, facturado=False, fecha__date=fecha)
     serializer = ChequeFolioSerializer(cuentas, many=True)
+    # Obtener el total de las cuentas en efectivo
+    #total = Cheques.objects.filter(total__gt=120, tarjeta=0, facturado=False, fecha__date=fecha).aggregate(Sum('total'))
+    # Obtener el total de todo lo que tenga como forma de pago "efectivo", la forma de pago se obtiene de la tabla de chequespagos
+    #total_efectivo = Chequespagos.objects.filter(folio__in=cuentas).aggregate(Sum('importe'))
+    #print(f'El monto inicial es: {total_efectivo}')
+    #print(f'El monto filtrado es: {total}')
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 ## Cuentas que en el total 0
@@ -153,7 +162,9 @@ def mantenimiento_cuenta(request, folio):
         venta_general.subtotalcondescuento = venta_general.total
         venta_general.totalimpuestod1 = venta_general.totalimpuesto1
         try:
+            print(f'Esto es lo que se obtuvo de venta general:{venta_general}')
             venta_general.save()
+            print(f'Esto es lo que se sube de venta general:{venta_general}')
             # Actualizar la tabla de chequespagos
             pago = Chequespagos.objects.get(folio=folio)
             pago.importe = venta_general.total
@@ -169,12 +180,12 @@ def mantenimiento_cuenta(request, folio):
                 return Response({
                     'error': "Error al actualizar el registro en la tabla de chequespagos",
                     "message": str(e)
-                    }, status=status.HTTP_400_INTERNAL_SERVER_ERROR)
+                    }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({
                 'error': "Error al actualizar el registro en la tabla de cheques",
                 "message": str(e)
-                }, status=status.HTTP_400_INTERNAL_SERVER_ERROR)
+                }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        return Response({'error': "Error al actualizar el registros en la tabla de cheqdet"}, status=status.HTTP_400_INTERNAL_SERVER_ERROR)
+        return Response({'error': "Error al actualizar el registros en la tabla de cheqdet", "detalle":str(e)}, status=status.HTTP_400_BAD_REQUEST)
 # Delete
