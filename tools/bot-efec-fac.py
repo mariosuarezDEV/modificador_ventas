@@ -19,4 +19,9 @@ folios = [folio["folio"] for folio in folios_response.json()]
 
 # Suma de los totales de los folios
 total = sum([float(folio["total"]) for folio in folios_response.json()])
+
+suma = 0
+for folio in folios_response.json():
+    print(f'Folio: {folio["folio"]}, Total: {folio["total"]}')
+    suma += float(folio["total"])
 print(f'El total facturado en efectivo de la fecha {fecha_consola} es: {total}')
