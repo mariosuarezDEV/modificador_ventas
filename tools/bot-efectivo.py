@@ -1,11 +1,17 @@
 import requests
 import random
 
+# Pedir la fecha por consola:
+fecha_consola = input("Ingresa la fecha (YYYY-MM-DD): ")
+efectivo_inicial_consola = input("Ingresa el efectivo inicial: ")
+
+fecha ={
+    "fecha": fecha_consola
+}
+
 # Obtener los folios
 endpoint_fecha = "http://127.0.0.01:8000/mantenimiento/cuentas/efectivo"
-fecha ={
-    "fecha": "2024-08-28"
-}
+
 folios_response = requests.get(endpoint_fecha, json=fecha)
 # respusta ejemplo: [{"folio": 3328,"total": "248.0000"},{"folio": 3330,"total": "253.0000"}]
 
@@ -16,7 +22,7 @@ folios = [folio["folio"] for folio in folios_response.json()]
 
 # Suma de los totales de los folios
 total = sum([float(folio["total"]) for folio in folios_response.json()])
-efectivo_inicial = 16282
+efectivo_inicial = float(efectivo_inicial_consola)
 # Obtener el 50% del efectivo inicial
 efectivo_final = efectivo_inicial / 2
 # Ver total:
@@ -55,5 +61,6 @@ for folio in folios_random:
         print(f"Error al actualizar el folio {folio}")
 
 print(f"Se actualizaron {folios_actualizados} folios")
+print(f"El efectivo reducido fue: {mantenimiento}")
 
 # Por cada folio en la lista de folios, se debe hacer una petición PUT a la URL: http://192.168.193.250:8080/mantenimiento/actualizar/{folio}/

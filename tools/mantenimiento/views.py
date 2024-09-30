@@ -56,18 +56,20 @@ def cuentas_efectivo(request):
     fecha = request.data['fecha']
     cuentas = Cheques.objects.filter(total__gt=120, tarjeta=0, facturado=False, fecha__date=fecha)
     serializer = ChequeFolioSerializer(cuentas, many=True)
-    # Obtener el total de las cuentas en efectivo
-    #total = Cheques.objects.filter(total__gt=120, tarjeta=0, facturado=False, fecha__date=fecha).aggregate(Sum('total'))
-    # Obtener el total de todo lo que tenga como forma de pago "efectivo", la forma de pago se obtiene de la tabla de chequespagos
-    #total_efectivo = Chequespagos.objects.filter(folio__in=cuentas).aggregate(Sum('importe'))
-    #print(f'El monto inicial es: {total_efectivo}')
-    #print(f'El monto filtrado es: {total}')
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 ## Cuentas que en el total 0
 @api_view(['GET'])
 def cuentas_total_cero(request):
     cuentas = Cheques.objects.filter(total=0)
+    serializer = ChequeFolioSerializer(cuentas, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# Ver todas las ventas en efectivo que fueron facturadas
+@api_view(['GET'])
+def cuentas_efectivo_facturadas(request):
+    fecha = request.data['fecha']
+    cuentas = Cheques.objects.filter(facturado=True, tarjeta=0, fecha__date=fecha)
     serializer = ChequeFolioSerializer(cuentas, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -162,9 +164,9 @@ def mantenimiento_cuenta(request, folio):
         venta_general.subtotalcondescuento = venta_general.total
         venta_general.totalimpuestod1 = venta_general.totalimpuesto1
         try:
-            print(f'Esto es lo que se obtuvo de venta general:{venta_general}')
+            #print(f'Esto es lo que se obtuvo de venta general:{venta_general}')
             venta_general.save()
-            print(f'Esto es lo que se sube de venta general:{venta_general}')
+            #print(f'Esto es lo que se sube de venta general:{venta_general}')
             # Actualizar la tabla de chequespagos
             pago = Chequespagos.objects.get(folio=folio)
             pago.importe = venta_general.total
