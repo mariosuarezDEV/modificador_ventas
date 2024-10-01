@@ -73,15 +73,15 @@ def cuentas_efectivo_facturadas(request):
     serializer = ChequeFolioSerializer(cuentas, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-# Update
+# Ver todas las ventas que ya fueron sustituidas (las que tienen como mesa "P/LL")
+@api_view(['GET'])
+def cuentas_sustituidas(request):
+    fecha = request.data['fecha']
+    cuentas = Cheques.objects.filter(mesa="P/LL", fecha__date=fecha)
+    serializer = ChequeFolioSerializer(cuentas, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-# Vamos a actualizar las informacion con el siguiente proceso:
-# 1. Obtener la cantidad (cantidad de productos) y el id del producto
-# Con base a esta informacion vamos a modificar la informacion de cheqdet
-# 2. Eliminar TODOS los movimientos de cheqdet menos el primero.
-# 3. Del registro quedate vamos a actualizar : cantidad - idproducto - descuento - precio - impuesto1 - preciosinimpuestos - modificador - usuariodescuento - comentariodescuento - idtipodescuento - idproductocompuesto - productocompuestoprincipal - preciocatalogo
-# 4. Seguido a eso actualizamos la tabla de cheques.
-# 5. Finalmente actualizamos la tabla de chequespagos
+# Update
 
 @api_view(['PUT'])
 def mantenimiento_cuenta(request, folio):
@@ -190,4 +190,14 @@ def mantenimiento_cuenta(request, folio):
                 }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': "Error al actualizar el registros en la tabla de cheqdet", "detalle":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# Vamos a actualizar las informacion con el siguiente proceso:
+# 1. Obtener la cantidad (cantidad de productos) y el id del producto
+# Con base a esta informacion vamos a modificar la informacion de cheqdet
+# 2. Eliminar TODOS los movimientos de cheqdet menos el primero.
+# 3. Del registro quedate vamos a actualizar : cantidad - idproducto - descuento - precio - impuesto1 - preciosinimpuestos - modificador - usuariodescuento - comentariodescuento - idtipodescuento - idproductocompuesto - productocompuestoprincipal - preciocatalogo
+# 4. Seguido a eso actualizamos la tabla de cheques.
+# 5. Finalmente actualizamos la tabla de chequespagos
+
+
 # Delete
