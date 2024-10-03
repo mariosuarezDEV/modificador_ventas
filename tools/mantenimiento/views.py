@@ -81,6 +81,14 @@ def cuentas_sustituidas(request):
     serializer = ChequeFolioSerializer(cuentas, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+# Obtener todas las ventas
+@api_view(['GET'])
+def ventas(request):
+    fecha = request.data['fecha']
+    cuentas = Cheques.objects.all(fecha__date=fecha)
+    serializer = ChequeFolioSerializer(cuentas, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 # Update
 
 @api_view(['PUT'])

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ver_cheques, ver_detalles, ver_pagos, mantenimiento_cuenta, cuentas_efectivo,cuentas_total_cero, cuentas_efectivo_facturadas, cuentas_sustituidas
+from .views import ver_cheques, ver_detalles, ver_pagos, mantenimiento_cuenta, cuentas_efectivo,cuentas_total_cero, cuentas_efectivo_facturadas, cuentas_sustituidas, ventas
 
 urlpatterns = [
     path('ventas/<str:folio>/', ver_cheques, name='ver_cheques'),
@@ -12,4 +12,7 @@ urlpatterns = [
     path('cuentas/efectivo/facturado', cuentas_efectivo_facturadas, name='cuentas_efectivo_facturadas'),
     path('cuentas/cero', cuentas_total_cero, name='cuentas_total_cero'),
     path('cuentas/sustituidas', cuentas_sustituidas, name='cuentas_sustituidas'),
+    
+    # Endpoint para el NoteBook
+    path('ventas', ventas, name='ventas_completas'),
 ]

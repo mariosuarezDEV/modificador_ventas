@@ -25,4 +25,4 @@ class ChequespagosSerializer(serializers.ModelSerializer): # Creamos la clase Ch
 class ChequeFolioSerializer(serializers.ModelSerializer): # Creamos la clase ChequeFolioSerializer que hereda de modelSerializer
     class Meta:
         model = Cheques
-        fields = ['folio', 'total']
+        fields = ['folio', 'efectivo', 'tarjeta', 'total', 'facturado']
