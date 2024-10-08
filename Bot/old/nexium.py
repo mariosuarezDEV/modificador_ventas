@@ -42,6 +42,7 @@ random.shuffle(folios)
 
 suma_efectivo = 0
 monto_final = 6000
+
 for folio in folios:
     # Obtener el $ del folio
     efectivo_folio = df[df["folio"] == folio]["total"].values[0]
@@ -58,10 +59,14 @@ for folio in folios:
     
     ajuste = importe - suma_efectivo
     
-    # si el ajuste es mayor a montofinal entonces se hace el mantenimiento
-    if ajuste > monto_final:
-        print(f"Haciendo manteniemiento del folio {folio}")
+    # Si el ajuste es mayor o igual a monto_final, se hace el mantenimiento
+    if ajuste >= monto_final:
+        print(f"Haciendo mantenimiento del folio {folio}")
         mant = requests.patch(f"{api}mantenimiento/{folio}", json={"cantidad_articulos": 1, "producto": producto_id})
     
+    # Si el ajuste es igual o ligeramente mayor a 6000, salir del bucle
+    if ajuste <= monto_final:
+        print("Se llego al limite de ajuste")
+        break
 
 print(f"Se ha hecho un mantenimiento con un total de {suma_efectivo} y un ajuste de {ajuste}")
