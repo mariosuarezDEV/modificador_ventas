@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from time import strptime
+
 from django.shortcuts import render
 
 import random
@@ -6,8 +8,6 @@ import requests as req
 
 import pandas as pd
 import numpy as np
-from numpy.testing.print_coercion_tables import print_new_cast_table
-
 
 # Create your views here.
 
@@ -15,127 +15,133 @@ def nexi_bot(request):
     if request.method == 'GET':
         return render(request, 'BotHome.html')
     else:
-        # Obtener datos del formulario
-        fecha_inicio = request.POST['fecha_inicio']
-        fecha_fin = request.POST['fecha_final']
-        servidor = request.POST['servidor']
-        limite = 6000
+        # Se hizo una petición POST
+        consola = [] # Mostar mensajes en la consola
+        analisis = [] # Mostrar datos de análisis
 
-        # Si no se ingresó una fecha de inicio
-        if fecha_inicio == '':
-            error_fecha_invalida = "Debe ingresar una fecha de inicio"
-            return render(request, 'BotHome.html', {'error': error_fecha_invalida})
+        # Obtener la fecha inicial
+        fecha_inicial = request.POST.get('fecha_inicial')
+        # Obtener la fecha final
+        fecha_final = request.POST.get('fecha_final')
+        # Obtener el servidor
+        servidor = request.POST.get('servidor')
 
-        # Validar que la fecha de inicio sea menor a la fecha final
-        if fecha_inicio > fecha_fin:
-            error_fecha_invalida = "El formato de las fechas es incorrecto"
-            return render(request, 'BotHome.html', {'error': error_fecha_invalida})
-
-        # Si no se seleccionó un servidor
+        # Validar que las fechas sean correctas
+        if fecha_inicial == '' or fecha_final == '':
+            consola.append('Por favor, ingrese las fechas')
+            return render(request, 'BotHome.html', {'registros': consola})
         if servidor == '':
-            error_servidor_invalido = "Debe seleccionar un servidor"
-            return render(request, 'BotHome.html', {'error': error_servidor_invalido})
+            consola.append('Por favor, seleccione un servidor')
+            return render(request, 'BotHome.html', {'registros': consola})
 
-        # Reliazar el proceso de mantenimiento de ventas
+        # Definir servidores
+        servidores = {
+            'centro' : '26.61.16.123',
+            'araucarias': '26.217.212.35',
+            'pruebas': '26.144.145.93'
+        }
+        # API:
+        api = f'http://{servidores[servidor]}:8000/florcatorce/mantenimiento'
+
+        # Definir productos
+        productos = {
+            'Pan para llevar' :{
+                'id': '042035',
+                'precio': 40
+            },
+            'Cafe 1/4': {
+                'id': '034003',
+                'precio': 80
+            }
+        }
 
         # Obtener las fechas a las que se les realizará el mantenimiento
-        fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d")
-        fecha_fin = datetime.strptime(fecha_fin, "%Y-%m-%d")
+        fecha_inicio = datetime.strptime(fecha_inicial, '%Y-%m-%d')
+        fecha_fin = datetime.strptime(fecha_final, '%Y-%m-%d')
         # Rango de fechas
         rango = fecha_fin - fecha_inicio
         fechas = [fecha_inicio + timedelta(days=i) for i in range(rango.days + 1)]
 
-        # Definir lista de productos
-        productos = {
-            'cafe_cuarto' : {
-                'id': '034003',
-                'precio': 80
-            },
-            'pan_para_llevar' :{
-                'id': '042035',
-                'precio': 40
-            },
-        }
-        # Definir API
-        servidores = {
-            'centro': '26.61.16.123',
-            'araucarias': '26.217.212.35',
-            'pruebas' : '26.144.145.93'
-        }
-        api = f'http://{servidores[servidor]}:8000/florcatorce/mantenimiento/'
-
-        # Recorrer las fechas
         for fecha in fechas:
-            # Formatear fecha
-            fecha = fecha.strftime('%Y-%m-%d')
-            ventas = req.get(f'{api}ventas', json={'fecha': fecha})
-
-            # Si no se pudo obtener las ventas
+            # Realizar una peticion para obtener las ventas
+            ventas = req.get(f'{api}/ventas', json={'fecha': fecha.strftime('%Y-%m-%d')})
             if ventas.status_code != 200:
-                return render(request, 'BotHome.html', {'error': 'Hubo un error por parte del servidor.\nIntente más tarde'})
+                return render(request, 'BotHome.html', {'error': 'Error al obtener las ventas. Consulta los detalles en la consola del servidor'})
 
-            ventas = ventas.json() # Creamos el diccionario de ventas
+            consola.append(f'La API respondio con un status code {ventas.status_code} para obtener las ventas del {fecha.strftime("%Y-%m-%d")}')
+            ventas = ventas.json()
+            # Crear un DataFrame con las ventas
+            df_ventas = pd.DataFrame(ventas)
+            # Convertir los tipos de datos
+            df_ventas['efectivo'] = df_ventas['efectivo'].astype(float)
+            df_ventas['tarjeta'] = df_ventas['tarjeta'].astype(float)
+            df_ventas['total'] = df_ventas['total'].astype(float)
 
-            # Crear dataframe
-            df = pd.DataFrame(ventas)
+            # Filtrar las ventas para el mantenimiento
+            # Efectivo >= 120 & Tarjeta == 0 & facturado == False
 
-            # Cambiar el tipo de dato
-            df['efectivo'] = df['efectivo'].astype(float)
-            df['tarjeta'] = df['tarjeta'].astype(float)
-            df['total'] = df['total'].astype(float)
+            df = df_ventas[(df_ventas['efectivo'] >= 120) & (df_ventas['tarjeta'] == 0) & (df_ventas['facturado'] == False)]
+            consola.append(f'El bot filtró {np.size(df)} ventas para el mantenimiento del {fecha.strftime("%Y-%m-%d")}')
+            # Crear un array de folios
+            folios_filtrados = np.array(df['folio'])
+            folios_ventas = np.array(df_ventas['folio'])
 
-            # Obtener el total de efectivos
-            total_efectivo = np.sum(df['efectivo'])
-            print(f'Total de efectivo: {total_efectivo} de la fecha {fecha}')
-
-            # Guardar las ventas
-            df.to_csv(f'ventas_{fecha}.csv', index=False)
-
-            # Ventas aptas para mantenimiento
-            df_folios = df[
-                (df['efectivo'] >= 120) & (df['tarjeta'] == 0) & (df['facturado'] == False)
-            ]
-
-            # Guardar las ventas aptas
-            df_folios.to_csv(f'ventas_aptas_{fecha}.csv', index=False)
-
-            # Guardar los folios
-            folios_array = np.array(df_folios['folio'])
-            # Folios totales
-            folios_totales = np.size(folios_array)
-            # Efectivo total
-            efectivo_total = np.sum(df_folios['efectivo'])
-
-            print(f'Folios totales: {folios_totales} de la fecha {fecha}')
-            print(f'Efectivo total: {efectivo_total} de la fecha {fecha}')
+            # Crear un array de efectivos
+            efectivos_filtrados = np.array(df['efectivo'])
+            efectivo_ventas = np.array(df_ventas['efectivo'])
 
             # Mezclar los folios
-            np.random.shuffle(folios_array)
+            np.random.shuffle(folios_filtrados)
+            suma_efectivos_filtrados = 0
+            folios_afectados = np.array([])
+            for folio in folios_filtrados:
+                # Configurar informacion del producto
+                producto = random.choice(list(productos.keys()))
+                id_producto = productos[producto]['id']
+                precio = productos[producto]['precio']
 
-            # Recorrer los folios
-            suma_efectivo_folios_por_fecha = 0
-            for folio in folios_array:
-                # Obtener el efectivo del folio actual
-                efectivo_folio = df_folios[df_folios['folio'] == folio]['efectivo'].values[0]
+                # Obtener el efectivo del folio
+                efectivo = df_ventas.loc[df_ventas['folio'] == folio, 'efectivo'].values[0]
 
-                suma_efectivo_folios_por_fecha += efectivo_folio # Se agrega el efectivo a la cuenta global
+                # Realizar una peticion para ajustar la venta
+                ajuste = req.patch(f'{api}/{folio}', json={
+                    'producto': id_producto,
+                    'cantidad': 1,
+                })
+                if ajuste.status_code != 200:
+                    consola.append(f'Error al ajustar la venta {folio}. Consulta los detalles en la consola del servidor')
+                    # Si el error persiste, no detener la ejecución
+                    continue
+                else:
+                    suma_efectivos_filtrados += efectivo - precio
+                    folios_afectados = np.append(folios_afectados, folio)
 
-                # Obtener un producto
-                prod_aleatorio = random.choice(list(productos.keys()))
-                prod_seleccionado = productos[prod_aleatorio]
-                precio_prod_seleccionado = prod_seleccionado['precio']
-                id_prod_seleccionado = prod_seleccionado['id']
+                # Decidir si hacer otro recorrido o no
+                delimitador = np.sum(efectivo_ventas) - suma_efectivos_filtrados
 
-                suma_efectivo_folios_por_fecha -= precio_prod_seleccionado # Se resta el precio del producto al efectivo
+                if 6000 < delimitador < 7000:
+                    # Elaborar reporte data science
+                    fecha_registro = fecha.strftime('%Y-%m-%d')
+                    total_folios_ventas = np.size(folios_ventas)
+                    total_folios_filtrados = np.size(folios_filtrados)
+                    total_efectivo_ventas = round(np.sum(efectivo_ventas), 2)
+                    total_efectivo_filtrados = round(np.sum(efectivos_filtrados), 2)
+                    efectivo_final = delimitador
+                    total_folios_afectados = np.size(folios_afectados)
 
-                bandera = total_efectivo - suma_efectivo_folios_por_fecha # 17000 - 2000 = 15000
-
-                # Saber si la bandera esta en el rango de limite (6000)
-                if limite <= bandera <= 6700:
-                    print(f'Se llego al limite de {limite} de la fecha {fecha} con la bandera {bandera}')
-                    print('\n')
+                    analisis.append({
+                        'fecha': fecha_registro,
+                        'total_folios_ventas': total_folios_ventas,
+                        'total_folios_filtrados': total_folios_filtrados,
+                        'total_efectivo_ventas': total_efectivo_ventas,
+                        'total_efectivo_filtrados': total_efectivo_filtrados,
+                        'efectivo_final': efectivo_final,
+                        'total_folios_afectados': total_folios_afectados
+                    })
+                    consola.append('El bot ha concluido el mantenimiento de ventas y ha generado un reporte, descargalo en el servidor')
                     break
-
-                # Aplicar mantenimiento
-
-        return render(request, 'BotHome.html')
+        # Retornar la consola de mensajes
+        return render(request, 'BotHome.html', {
+            'registros': consola,
+            'data_science': analisis
+        })

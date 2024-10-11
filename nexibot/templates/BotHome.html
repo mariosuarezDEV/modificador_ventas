@@ -9,7 +9,7 @@
     <!-- Barra que muestre el nombre de nexi bot -->
     <nav class="shadow text-bg-success p-3 text-center">
         <h1 class=" display-4">
-            Nexi Bot
+            Nexium Bot
         </h1>
         <h4 class="fw-normal">
             Mantenimiento de ventas
@@ -28,7 +28,7 @@
                     </p>
                     <div class="input-group">
                       <div class="input-group-text">📅</div>
-                      <input type="date" class="form-control"  name="fecha_inicio">
+                      <input type="date" class="form-control"  name="fecha_inicial">
                     </div>
                 </div>
 
@@ -70,30 +70,47 @@
                 </small>
             </p>
 
-            <!-- Reporte de ventas -->
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Reporte de mantenimiento</h5>
+            <div class="row g-3">
+                <!-- Reporte de ventas -->
+                <div class="col-12 col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title">Reporte de mantenimiento</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for dato in data_science %}
+                                <div class="mb-4">
+                                    <h3 class="text-secondary">{{ dato.fecha }}</h3>
+                                    <p class="mb-1 lead">Efectivo Inicial: <span class="fw-bold text-success">{{ dato.total_efectivo_ventas }}</span></p>
+                                    <p class="mb-1 lead">Efectivo Final: <span class="fw-bold text-warning">{{ dato.efectivo_final }}</span></p>
+                                    <hr>
+                                </div>
+                            {% empty %}
+                                <p class="text-center text-muted">No hay información cargada en el servicio.</p>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="card-body">
+                </div>
 
+
+                <!-- Consola -->
+                <div class="col-12 col-lg-6">
+                    <div class="card card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title">Consola de registros</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for registro in registros %}
+                                <p>{{ registro }}</p>
+                            {% empty %}
+                                <p>El servicio no a registrado peticiones.</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Consola -->
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title">Consola de registros</h5>
-                    </div>
-                    <div class="card-body">
 
-
-                    </div>
-                </div>
-            </div>
 
             <!-- Mostar errores -->
             {% if error %}
@@ -101,15 +118,6 @@
                     {{ error }}
                 </div>
             {% endif %}
-
-            <!-- Depuracion
-            {% if debug %}
-                <div class="alert alert-warning" role="alert">
-                    {% for fecha in debug %}
-                        {{ fecha }}
-                    {% endfor %}
-                </div>
-            {% endif %} -->
 
         </div>
 
