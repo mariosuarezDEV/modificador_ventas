@@ -37,7 +37,7 @@ def nexi_bot(request):
         # Definir servidores
         servidores = {
             'centro' : '26.61.16.123',
-            'araucarias': '26.217.212.35',
+            'araucarias': '26.45.221.222',
             'pruebas': '26.144.145.93'
         }
         # API:
