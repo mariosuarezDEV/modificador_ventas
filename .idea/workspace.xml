@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b4845ff7-e61c-47ed-b2ee-e6ca8b1864bd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/nexium.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/nexium.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/serializers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mantventas_api/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/models.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/templates/BotHome.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/templates/Nexium.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/templates/reporte.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexibot/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexium/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexium/asgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexium/settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexium/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nexium/wsgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2nLfXVhnpR8Ckx3bXg7HGVAvMd5" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/lmcer/OneDrive/Documentos/GitHub/Nexium/Backend/mant_vent",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
+        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b4845ff7-e61c-47ed-b2ee-e6ca8b1864bd" name="Changes" comment="" />
+      <created>1728757317805</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728757317805</updated>
+      <workItem from="1728757318751" duration="60000" />
+      <workItem from="1728757389322" duration="194000" />
+      <workItem from="1728757596076" duration="44000" />
+      <workItem from="1728757667501" duration="4466000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
