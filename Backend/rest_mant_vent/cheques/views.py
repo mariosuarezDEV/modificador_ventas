@@ -132,6 +132,7 @@ def actualizar_venta(request, folio):
         venta.descuentocriterio = 0
         venta.subtotalcondescuento = venta.subtotal
         venta.totalimpuestod1 = venta.totalimpuesto1
+        venta.totalsindescuentoimp = venta.total
         venta.save()
     except Exception as e:
         print("Error al actualizar la tabla cheques", str(e))
@@ -187,3 +188,5 @@ def actualizar_venta(request, folio):
             "pago": serializer_pago.data
         }
     }, status=status.HTTP_200_OK)
+
+# Reporte: Folios con 

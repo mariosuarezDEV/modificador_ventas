@@ -7,7 +7,6 @@ import random
 import os
 import locale
 
-
 # Create your views here.
 
 def nexium_bot(request):
