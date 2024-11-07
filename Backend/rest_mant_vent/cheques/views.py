@@ -36,7 +36,7 @@ def ventas_mantenido_view(request):
     # Obtener la fecha el cliente
     fecha = request.data.get("fecha")
     if fecha:
-        ventas = Cheques.objects.filter(fecha__date=fecha, mesa__exact="P/LL")
+        ventas = Cheqdet.objects.filter(fecha__date=fecha, mesa__exact="P/LL")
         # Serializar ventas
         serializer = ChequesSerializer(ventas, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
@@ -45,6 +45,17 @@ def ventas_mantenido_view(request):
         return Response({
             "Error": "Es necesario enviar una fecha"
         }, status.HTTP_400_BAD_REQUEST)
+
+# Obtener ventas con impuesto de 0%
+@api_view(['POST'])
+def ventas_sin_impuesto(request):
+    fecha = request.data.get("fecha")
+    # Obtener ventas con impuesto de 0%
+    ventas = Cheqdet.objects.filter(hora__date=fecha, impuesto1=0)
+    # Serializar ventas
+    serializer = CheqdetSerializer(ventas, many=True)
+    
+    return Response(serializer.data, status.HTTP_200_OK)
 
 # Ver informacion de un folio
 @api_view(['GET'])
