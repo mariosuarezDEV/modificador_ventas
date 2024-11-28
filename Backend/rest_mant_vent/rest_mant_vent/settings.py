@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-4rl5tj@ln=y=+l=@_c5uyo04&i51l5x*ta!e7^-==ds$da($mh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -81,11 +81,11 @@ DATABASES = {
         "NAME": "softrestaurant11",
         "USER": "sa",
         "PASSWORD": "National09",
-        "HOST": "26.61.16.123", # Direccion IP donde se encuentra la base de datos
+        "HOST": "26.217.212.35",  # Direccion IP donde se encuentra la base de datos
         "PORT": "1433",
         "OPTIONS": {
             "driver": "ODBC Driver 18 for SQL Server",
-            'extra_params': 'TrustServerCertificate=yes;',
+            "extra_params": "TrustServerCertificate=yes;",
         },
     },
 }

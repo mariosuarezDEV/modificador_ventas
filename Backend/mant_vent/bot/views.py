@@ -12,7 +12,7 @@ import locale
 def nexium_bot(request):
     # Definir servidores
     servidores = {
-        "araucarias": "26.45.221.222",
+        "araucarias": "26.217.212.35",
         "centro": "26.61.16.123",
         "beta": "26.144.145.93",
         "desarrollo": "127.0.0.1"
@@ -144,7 +144,7 @@ def nexium_bot(request):
                     # Poner el delimitador con 1 decimal
                     delimitador = round(delimitador, 1)
 
-                    if 6000 < delimitador < 7020:
+                    if 2500 < delimitador < 3000:
                         #print(f'El efectivo inicial de la fecha {fecha} es de {total_efectivo} y termino con un efectivo de {delimitador}')
                         # Agregar los datos al DataFrame
                         mantenimiento = pd.DataFrame({
