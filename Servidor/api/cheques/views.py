@@ -10,12 +10,18 @@ from django.shortcuts import get_object_or_404
 from .models import Cheques, Cheqdet, Productos, Chequespagos, Productosdetalle
 
 # Serializadores
-from .serializers import ChequesSerializer, CheqdetSerializer, ChequespagosSerializer, ChequeFolioSerializer
+from .serializers import (
+    ChequesSerializer,
+    CheqdetSerializer,
+    ChequespagosSerializer,
+    ChequeFolioSerializer,
+)
 
 # Vistas / Metodos
 
+
 # Obtener todas las ventas
-@api_view(['GET'])
+@api_view(["GET"])
 def ventas_view(request):
     # Obtener la fecha el cliente
     fecha = request.data.get("fecha")
@@ -26,39 +32,42 @@ def ventas_view(request):
         return Response(serializer.data, status.HTTP_200_OK)
     else:
         # No se pueden obtener ventas sin fecha
-        return Response({
-            "Error": "Es necesario enviar una fecha"
-        }, status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"Error": "Es necesario enviar una fecha"}, status.HTTP_400_BAD_REQUEST
+        )
+
 
 # Obtener ventas con mantenimiento
-@api_view(['GET'])
+@api_view(["GET"])
 def ventas_mantenido_view(request):
     # Obtener la fecha el cliente
     fecha = request.data.get("fecha")
     if fecha:
-        ventas = Cheqdet.objects.filter(fecha__date=fecha, mesa__exact="P/LL")
+        ventas = Cheques.objects.filter(fecha__date=fecha, mesa__exact="P/LL")
         # Serializar ventas
         serializer = ChequesSerializer(ventas, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
     else:
         # No se pueden obtener ventas sin fecha
-        return Response({
-            "Error": "Es necesario enviar una fecha"
-        }, status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"Error": "Es necesario enviar una fecha"}, status.HTTP_400_BAD_REQUEST
+        )
+
 
 # Obtener ventas con impuesto de 0%
-@api_view(['POST'])
+@api_view(["POST"])
 def ventas_sin_impuesto(request):
     fecha = request.data.get("fecha")
     # Obtener ventas con impuesto de 0%
     ventas = Cheqdet.objects.filter(hora__date=fecha, impuesto1=0)
     # Serializar ventas
     serializer = CheqdetSerializer(ventas, many=True)
-    
+
     return Response(serializer.data, status.HTTP_200_OK)
 
+
 # Ver informacion de un folio
-@api_view(['GET'])
+@api_view(["GET"])
 def folio_view(request, folio):
     # Obtener cheque del folio
     cheque = get_object_or_404(Cheques, folio=folio)
@@ -72,23 +81,28 @@ def folio_view(request, folio):
     detalles_serializer = CheqdetSerializer(detalles, many=True)
     pago_serializer = ChequespagosSerializer(pago)
 
-    return Response({
-        "Cheque": cheque_serializer.data,
-        "Detalles": detalles_serializer.data,
-        "Pago": pago_serializer.data
-    }, status.HTTP_200_OK)
+    return Response(
+        {
+            "Cheque": cheque_serializer.data,
+            "Detalles": detalles_serializer.data,
+            "Pago": pago_serializer.data,
+        },
+        status.HTTP_200_OK,
+    )
+
 
 # Mantenimiento de un folio
-@api_view(['PATCH'])
+@api_view(["PATCH"])
 def actualizar_venta(request, folio):
     # Datos recibidor del frontend
     producto_id = request.data.get("producto")
     cantidad = request.data.get("cantidad")
 
     if not producto_id or not cantidad:
-        return Response({
-            "Error": "Es necesario enviar el producto y la cantidad"
-        }, status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"Error": "Es necesario enviar el producto y la cantidad"},
+            status.HTTP_400_BAD_REQUEST,
+        )
 
     # Obtener el producto
     detalle_producto = get_object_or_404(Productosdetalle, idproducto=producto_id)
@@ -192,12 +206,16 @@ def actualizar_venta(request, folio):
     serializer_pago = ChequespagosSerializer(nuevo_pago)
 
     # Retornar los datos
-    return Response({
-        "datos actualizados": {
-            "venta": serializer.data,
-            "detalle": serializer_detalle.data,
-            "pago": serializer_pago.data
-        }
-    }, status=status.HTTP_200_OK)
+    return Response(
+        {
+            "datos actualizados": {
+                "venta": serializer.data,
+                "detalle": serializer_detalle.data,
+                "pago": serializer_pago.data,
+            }
+        },
+        status=status.HTTP_200_OK,
+    )
 
-# Reporte: Folios con 
+
+# Reporte: Folios con
